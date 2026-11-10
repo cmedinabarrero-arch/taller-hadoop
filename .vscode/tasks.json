@@ -1,0 +1,175 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "1. Levantar clúster",
+      "type": "shell",
+      "command": "docker compose up -d --build",
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "new",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "2. Ver estado de contenedores",
+      "type": "shell",
+      "command": "docker compose ps",
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "new",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "3. Verificar clúster",
+      "type": "shell",
+      "command": "docker exec namenode bash /workspace/scripts/00_verificar_cluster.sh",
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "new",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "4. Cargar datos a HDFS",
+      "type": "shell",
+      "command": "docker exec namenode bash /workspace/scripts/01_cargar_datos.sh",
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "new",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Job 1 - WordCount",
+      "type": "shell",
+      "command": "docker exec namenode bash /workspace/scripts/job1_wordcount.sh",
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "new",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Job 2 - Horas pico",
+      "type": "shell",
+      "command": "docker exec namenode bash /workspace/scripts/job2_horas_pico.sh",
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "new",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Job 2 - Horas pico (LENTO, para fallos)",
+      "type": "shell",
+      "command": "docker exec namenode bash /workspace/scripts/job2_horas_pico.sh 1",
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "new",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Job 3 - Promedio ventas por ciudad",
+      "type": "shell",
+      "command": "docker exec namenode bash /workspace/scripts/job3_promedio_ventas.sh",
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "new",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Job 4 - Top 10 URLs",
+      "type": "shell",
+      "command": "docker exec namenode bash /workspace/scripts/job4_top_urls.sh",
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "new",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Job fallido (estado FAILED)",
+      "type": "shell",
+      "command": "docker exec namenode bash /workspace/scripts/job_fallido.sh",
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "new",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Validar resultados",
+      "type": "shell",
+      "command": "docker exec namenode bash /workspace/scripts/validar.sh",
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "new",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Fallas - Estado de HDFS",
+      "type": "shell",
+      "command": "docker exec namenode bash /workspace/scripts/fallas/estado_hdfs.sh",
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "new",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Fallas - Ver contenedores del job",
+      "type": "shell",
+      "command": "docker exec namenode bash /workspace/scripts/fallas/ver_contenedores_job.sh",
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "new",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Fallas - Fallar una tarea Map",
+      "type": "shell",
+      "command": "docker exec namenode bash /workspace/scripts/fallas/fallar_tarea.sh",
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "new",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Abrir terminal dentro del namenode",
+      "type": "shell",
+      "command": "docker exec -it namenode bash",
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "new",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Apagar clúster (conserva datos)",
+      "type": "shell",
+      "command": "docker compose down",
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "new",
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Apagar y BORRAR todo",
+      "type": "shell",
+      "command": "docker compose --profile extra down -v",
+      "problemMatcher": [],
+      "presentation": {
+        "panel": "new",
+        "reveal": "always"
+      }
+    }
+  ]
+}

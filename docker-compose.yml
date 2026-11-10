@@ -1,0 +1,142 @@
+# =====================================================================
+#  Clúster Hadoop 3.2.1 para el taller (HDFS + YARN + MapReduce)
+#
+#  HDFS : namenode + datanode1 + datanode2   (+ datanode3 opcional)
+#  YARN : resourcemanager + nodemanager1 + nodemanager2
+#  Extra: historyserver (MapReduce JobHistory Server)
+#
+#  Levantar :  docker compose up -d --build
+#  Opcional :  docker compose --profile extra up -d datanode3
+#  Apagar   :  docker compose down        (agrega -v para borrar los datos)
+# =====================================================================
+name: taller-hadoop
+
+# Configuración común a todos los nodos (se reutiliza con "<<: *hadoop")
+x-hadoop: &hadoop
+  env_file:
+    - ./hadoop.env
+  # "no" = si un contenedor se cae, NO se reinicia solo.
+  # Así podemos provocar fallos y observarlos con calma.
+  restart: "no"
+
+x-nodemanager-build: &nm-build
+  build: ./nodemanager
+  image: taller/hadoop-nodemanager-python:3.2.1
+
+services:
+  # ------------------------------ HDFS ------------------------------
+  namenode:
+    <<: *hadoop
+    image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    container_name: namenode
+    hostname: namenode
+    environment:
+      CLUSTER_NAME: taller
+    ports:
+      - "9870:9870"   # Interfaz web de HDFS
+      - "9000:9000"   # Puerto RPC de HDFS (fs.defaultFS)
+    volumes:
+      - hadoop_namenode:/hadoop/dfs/name
+      - ./:/workspace  # esta carpeta del proyecto queda visible dentro del contenedor
+
+  datanode1:
+    <<: *hadoop
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: datanode1
+    hostname: datanode1
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870"
+    ports:
+      - "9864:9864"
+    volumes:
+      - hadoop_datanode1:/hadoop/dfs/data
+    depends_on: [namenode]
+
+  datanode2:
+    <<: *hadoop
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: datanode2
+    hostname: datanode2
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870"
+    ports:
+      - "9865:9864"
+    volumes:
+      - hadoop_datanode2:/hadoop/dfs/data
+    depends_on: [namenode]
+
+  # Opcional: tercer DataNode para ver la RE-replicación de bloques.
+  # Solo arranca si se pide:  docker compose --profile extra up -d datanode3
+  datanode3:
+    <<: *hadoop
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: datanode3
+    hostname: datanode3
+    profiles: ["extra"]
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870"
+    ports:
+      - "9866:9864"
+    volumes:
+      - hadoop_datanode3:/hadoop/dfs/data
+    depends_on: [namenode]
+
+  # ------------------------------ YARN ------------------------------
+  resourcemanager:
+    <<: *hadoop
+    image: bde2020/hadoop-resourcemanager:2.0.0-hadoop3.2.1-java8
+    container_name: resourcemanager
+    hostname: resourcemanager
+    environment:
+      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode1:9864 datanode2:9864"
+    ports:
+      - "8088:8088"   # Interfaz web de YARN
+    depends_on: [namenode, datanode1, datanode2]
+
+  nodemanager1:
+    <<: [*hadoop, *nm-build]
+    container_name: nodemanager1
+    hostname: nodemanager1
+    environment:
+      SERVICE_PRECONDITION: "resourcemanager:8088"
+    ports:
+      - "8042:8042"
+    volumes:
+      - ./:/workspace
+    depends_on: [resourcemanager]
+
+  nodemanager2:
+    <<: [*hadoop, *nm-build]
+    container_name: nodemanager2
+    hostname: nodemanager2
+    environment:
+      SERVICE_PRECONDITION: "resourcemanager:8088"
+    ports:
+      - "8043:8042"
+    volumes:
+      - ./:/workspace
+    depends_on: [resourcemanager]
+
+  # MapReduce JobHistory Server: guarda el historial de los jobs terminados
+  historyserver:
+    <<: *hadoop
+    image: bde2020/hadoop-historyserver:2.0.0-hadoop3.2.1-java8
+    container_name: historyserver
+    hostname: historyserver
+    command: ["/opt/hadoop-3.2.1/bin/mapred", "historyserver"]
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870 resourcemanager:8088"
+    ports:
+      - "19888:19888"  # Interfaz web del historial de jobs
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://historyserver:19888/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    depends_on: [resourcemanager]
+
+volumes:
+  hadoop_namenode:
+  hadoop_datanode1:
+  hadoop_datanode2:
+  hadoop_datanode3:
