@@ -1,7 +1,5 @@
 # Taller práctico: HDFS y Hadoop MapReduce con Docker
 
-Clúster Hadoop 3.2.1 completo en tu PC con Windows, manejado desde VS Code.
-
 ```
 taller-hadoop/
 ├── docker-compose.yml        ← define los 8 contenedores del clúster
@@ -44,7 +42,6 @@ taller-hadoop/
    VS Code te la sugerirá al abrir la carpeta.
 3. ~4 GB libres en disco (las imágenes se descargan la primera vez).
 
-Abre **Docker Desktop** y espera a que diga *Engine running*.
 
 ## 1. Levantar el clúster
 
@@ -63,10 +60,6 @@ Luego revisa el estado:
 docker compose ps
 ```
 
-Espera 1–2 minutos hasta que todos digan **`(healthy)`**. Si alguno dice `Exited`, mira
-la sección *Problemas comunes*.
-
-> 💡 Todos los comandos de esta guía también están en **Terminal ▸ Ejecutar tarea…**
 
 ### 1.1 Validar servicios
 
@@ -74,13 +67,11 @@ la sección *Problemas comunes*.
 docker exec namenode bash /workspace/scripts/00_verificar_cluster.sh
 ```
 
-Debes ver: `Safe mode is OFF`, `Live datanodes (2)`, dos NodeManagers `RUNNING`
-y la prueba de escritura/lectura en HDFS imprimiendo "hola HDFS…".
 
 > `docker exec namenode …` = "ejecuta este comando **dentro** del contenedor namenode".
 > La carpeta del proyecto se ve dentro del contenedor como `/workspace`.
 
-### 1.2 Interfaces web (ábrelas en el navegador)
+### 1.2 Interfaces web 
 
 | Servicio | URL | Qué mirar |
 |---|---|---|
@@ -90,9 +81,6 @@ y la prueba de escritura/lectura en HDFS imprimiendo "hola HDFS…".
 | NodeManager 1 / 2 | http://localhost:8042 · :8043 | Contenedores corriendo en cada nodo |
 | DataNode 1 / 2 | http://localhost:9864 · :9865 | Estado de cada DataNode |
 
-> Algunos enlaces dentro de las páginas apuntan a nombres como `nodemanager1:8042`; esos
-> no abren desde Windows (son nombres internos de Docker). Cambia el nombre por
-> `localhost` y el puerto que corresponde de la tabla, o usa los scripts de logs.
 
 ---
 
@@ -224,9 +212,6 @@ compara con HDFS. Debe salir `[OK]` en los 4 jobs.
 
 ## 5. Tolerancia a fallos
 
-Necesitas **dos terminales** en VS Code (botón **+** del panel de terminal). En los
-experimentos uno observa y el otro rompe cosas. Para mirar HDFS en vivo:
-
 ```powershell
 docker exec -it namenode bash /workspace/scripts/fallas/estado_hdfs.sh --seguir
 ```
@@ -243,8 +228,6 @@ docker exec -it namenode bash /workspace/scripts/fallas/estado_hdfs.sh --seguir
    Incluso puedes correr un job: funciona leyendo de la réplica que queda.
 5. `docker start datanode2` → vuelve a `Live (2)` y los bloques vuelven a 2 réplicas.
 
-**Por qué:** cada bloque está en 2 DataNodes; si uno muere, el otro tiene copia. El
-NameNode detecta la muerte por falta de *heartbeats* (latidos cada 3 s).
 
 ### Experimento B — Re-replicación con un tercer DataNode (opcional, muy ilustrativo)
 
@@ -347,13 +330,3 @@ docker compose down               # apaga, conserva los datos de HDFS
 docker compose --profile extra down -v   # apaga y BORRA todo (HDFS queda vacío)
 ```
 
-## Glosario rápido
-
-- **HDFS**: sistema de archivos distribuido. Parte archivos en **bloques** y guarda varias **réplicas** en distintos nodos.
-- **NameNode**: guarda los *metadatos* (nombres, carpetas, qué bloque está en qué DataNode). No guarda los datos.
-- **DataNode**: guarda los bloques reales y le manda *heartbeats* al NameNode.
-- **YARN**: administra los recursos (RAM/CPU) del clúster. **ResourceManager** decide; **NodeManager** ejecuta *contenedores* en cada máquina.
-- **ApplicationMaster**: el "jefe" de cada job; pide contenedores y vigila sus tareas.
-- **MapReduce**: modelo de programación: *Map* transforma cada registro en pares clave/valor, *Shuffle* agrupa por clave, *Reduce* combina los valores de cada clave.
-- **Hadoop Streaming**: permite escribir el Map y el Reduce en cualquier lenguaje (aquí Python) que lea de `stdin` y escriba en `stdout`.
-- **Combiner**: un reduce local que corre tras el Map para enviar menos datos por la red.
