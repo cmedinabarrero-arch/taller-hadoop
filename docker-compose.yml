@@ -15,8 +15,8 @@ name: taller-hadoop
 x-hadoop: &hadoop
   env_file:
     - ./hadoop.env
-  # "no" = si un contenedor se cae, NO se reinicia solo.
-  # Así podemos provocar fallos y observarlos con calma.
+  # Sin reinicio automático: los contenedores detenidos en las pruebas
+  # de tolerancia a fallos se quedan apagados hasta encenderlos a mano.
   restart: "no"
 
 x-nodemanager-build: &nm-build

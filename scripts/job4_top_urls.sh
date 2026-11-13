@@ -27,5 +27,5 @@ hdfs dfs -cat $SALIDA/part-* > "$EVIDENCIAS/job4_resultado.txt"
 titulo "Top 10 URLs (url | visitas)"
 cat "$EVIDENCIAS/job4_resultado.txt"
 echo
-echo "Fíjate en los contadores 'Combine input records' vs 'Combine output records'"
-echo "en la consola: muestran cuántas líneas se ahorró enviar el combiner."
+echo "Efecto del combiner: comparar 'Combine input records' y 'Combine output records'"
+echo "en los contadores de la consola."

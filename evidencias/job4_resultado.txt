@@ -1,0 +1,10 @@
+/	60195
+/productos	28311
+/carrito	18070
+/buscar?q=cafe	13388
+/login	10272
+/static/css/main.css	8330
+/static/js/app.js	7156
+/static/img/logo.png	6231
+/api/v1/productos	5363
+/checkout	4770

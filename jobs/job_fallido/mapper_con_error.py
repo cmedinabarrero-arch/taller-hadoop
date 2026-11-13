@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-JOB FALLIDO (a propósito) - para ver el estado FAILED y leer logs de error.
+JOB FALLIDO (a propósito) - para observar el estado FAILED y los logs de error.
 
-Lee unas líneas y luego divide entre cero -> Python lanza una excepción,
-el proceso termina con error, Hadoop reintenta la tarea (hasta 4 intentos)
-y como siempre falla, el job termina en estado FAILED.
-
-En los logs (yarn logs -applicationId ...) verás el "Traceback" de Python
-y el mensaje "ZeroDivisionError".
+Después de 500 líneas divide entre cero. La tarea falla siempre, YARN la
+reintenta hasta 4 veces (mapreduce.map.maxattempts) y el job queda FAILED.
+En los logs aparece el Traceback de Python con ZeroDivisionError.
 """
 import sys
 

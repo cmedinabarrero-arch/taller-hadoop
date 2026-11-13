@@ -2,10 +2,8 @@
 """
 JOB 4 - Top 10 URLs  (COMBINER)
 
-Un combiner es un "mini-reducer" que corre en el mismo nodo del Map, ANTES
-de enviar los datos por la red. Aquí suma los 1 de cada URL localmente:
-en vez de mandar 50.000 líneas "/producto/1  1", manda una sola
-"/producto/1  50000". Menos tráfico en el shuffle = job más rápido.
+Suma localmente, en el nodo del Map, los conteos de cada URL antes del
+shuffle. Reduce la cantidad de registros que viajan por la red.
 
 Entrada y salida tienen el mismo formato:  url <TAB> cantidad
 """

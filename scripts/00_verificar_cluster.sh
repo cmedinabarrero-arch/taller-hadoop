@@ -6,7 +6,7 @@ source /workspace/scripts/comun.sh
 titulo "1. Versión de Hadoop"
 hadoop version | head -1
 
-titulo "2. Modo seguro del NameNode"
+titulo "2. Modo seguro del NameNode (debe decir OFF)"
 hdfs dfsadmin -safemode get
 
 titulo "3. DataNodes registrados en el NameNode"

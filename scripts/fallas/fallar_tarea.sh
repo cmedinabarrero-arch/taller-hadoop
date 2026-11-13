@@ -36,7 +36,7 @@ if [ "$MODO" != "--hasta-fallar" ]; then
   mapred job -fail-task "$ATT"
   echo
   echo "Listo. En unos segundos YARN lanzará el intento siguiente (_1) de la misma tarea."
-  echo "Míralo en la consola del job (Status : FAILED) o en http://localhost:8088"
+  echo "Se ve en la consola del job (Status : FAILED) y en http://localhost:8088"
   exit 0
 fi
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Muestra EN QUÉ NODEMANAGER está corriendo cada contenedor de un job.
-# Úsalo mientras corre un job lento para decidir qué NodeManager apagar.
+# Útil con un job lento en ejecución, para decidir qué NodeManager apagar.
 #   docker exec namenode bash /workspace/scripts/fallas/ver_contenedores_job.sh            (toma el job que esté corriendo)
 #   docker exec namenode bash /workspace/scripts/fallas/ver_contenedores_job.sh application_XXX
 source /workspace/scripts/comun.sh
@@ -28,4 +28,4 @@ done
 titulo "Contenedores por NodeManager"
 yarn node -list 2>/dev/null
 echo
-echo "El contenedor terminado en _000001 es el ApplicationMaster (el 'jefe' del job)."
+echo "El contenedor terminado en _000001 es el ApplicationMaster del job."
