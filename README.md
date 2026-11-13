@@ -1,6 +1,6 @@
 # Taller práctico: HDFS y Hadoop MapReduce con Docker
 
-**Autor:** Christian Medina
+**Autor:** Christian Medina y Santiago Nieto
 
 Clúster Hadoop 3.2.1 (HDFS + YARN + MapReduce) desplegado con Docker Compose sobre
 Windows. Sobre él cargué tres datasets, ejecuté cuatro trabajos MapReduce, verifiqué sus
